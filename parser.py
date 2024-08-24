@@ -23,8 +23,24 @@ class SuperjobParser:
                 else:
                     company_site_url = '-'
 
-                self.vacancy_filtered[vacancy_name] = {'vacancy_referrer': vacancy_referrer, 'company_page_url':company_page_url, 'company_site_url':company_site_url}
+                self.vacancy_filtered[vacancy_name] = {'vacancy_referrer': vacancy_referrer, 'company_page_url':company_page_url, 'company_site_url':company_site_url, 'company_INN': self.get_company_inn_by_name(vacancy_referrer)}
 
+    @staticmethod
+    def get_company_inn_by_name(company_name):
+        params = {
+            "q": company_name,
+            "key": '12e6d3e2bfa55300cb5dd8b0d501e8fd2930130f'
+        }
+        response = requests.get("https://api-fns.ru/api/search", params=params)
+
+        if response.status_code == 200:
+            data = response.json()
+
+            if data.get('items'):
+                company_data = data['items'][0]
+                inn = company_data.get('ЮЛ').get('ИНН')
+
+                return inn
 
 #class="EruXX pGi4i f-test-link-www_sogaz_ru _1+j9e" - sogaz
 # class="fGJmW hI4F1" - ВТБ
